@@ -15,7 +15,7 @@ import panel as pn
 #from model_predict import predict
 
 hv.extension('bokeh')
-
+pn.config.sizing_mode = "stretch_width"
 """
 
 Adding selection tool
@@ -82,7 +82,7 @@ Create Holoview Dashboard
 
 """
 
-width = 1100
+#width = 1100
     
 hover = HoverTool(
     tooltips = [
@@ -113,22 +113,24 @@ def plot_curve():
     curve = hv.Curve(df, 'Date', ('Close', 'label'))
     curve_pred = hv.Curve(future_df, 'Date', ('Close', 'Price'))
     # Labels and layout
-    tgt = curve.relabel("Past "+title).opts(width=width,
+    tgt = curve.relabel("Past "+title).opts(#width=width,
                         height=600,
                         show_grid=True, 
                         labelled=['y'],
                         default_tools=[hover],
                         hooks=[set_tools], 
-                        title=title)
-    tgt_pred = curve_pred.relabel("Future "+title).opts(width=width,
+                        title=title,
+                        responsive=True)
+    tgt_pred = curve_pred.relabel("Future "+title).opts(#width=width,
                         height=600,
                         show_grid=True, 
                         labelled=['y'],
                         default_tools=[hover],
                         hooks=[set_tools], 
-                        title=title)
-    src = curve.opts(width=width, height=100, yaxis=None, default_tools=[], color='green')
-    src_pred = curve_pred.opts(width=width, height=100, yaxis=None, default_tools=[], color='green')
+                        title=title,
+                        responsive=True)
+    src = curve.opts( height=100, yaxis=None, default_tools=[], color='green', responsive=True)
+    src_pred = curve_pred.opts( height=100, yaxis=None, default_tools=[], color='green', responsive = True)
 
     circle = hv.Scatter(df, 'Date', ('Close', 'Price')).opts(color='green')
     circle_pred = hv.Scatter(future_df, 'Date', ('Close', 'Price')).opts(color='blue')
@@ -154,7 +156,9 @@ Bokeh Server Deployment
 def update_plot(_indexes):
     app = pn.Column(
         selection, 
-        plot_curve()
+        plot_curve(),
+        responsive=True,
+        sizing_mode="stretch_both"
     )
     return app
 
